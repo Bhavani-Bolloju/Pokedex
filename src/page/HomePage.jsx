@@ -4,12 +4,14 @@ import { Outlet } from "react-router-dom";
 function HomePage() {
   return (
     <div>
-      <div className="relative left-0 top-0 w-40 h-full bg-slate-100">
-        <div className="fixed  w-40 left-0 h-full bg-slate-500">filter</div>
+      <div className="relative w-56 bg-red-400   ">
+        <div className="fixed  w-56 left-0 h-full bg-[#182C61]  text-[#e8eaef] z-50">
+          filter
+        </div>
       </div>
-      <div className="bg-green-300 h-[100vh]">
+      <main className="h-[100vh] p-10 ml-56 color-[#182C61]">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 }

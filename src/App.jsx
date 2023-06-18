@@ -9,7 +9,7 @@ import List from "./components/main/List";
 
 function App() {
   return (
-    <div>
+    <div className="text-[#182C61] font-[Outfit] ">
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />}>
@@ -27,8 +27,6 @@ function App() {
 export default App;
 
 /*
-
-
 const [data, setData] = useState(null);
 
   useEffect(() => {
