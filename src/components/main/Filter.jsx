@@ -7,7 +7,7 @@ const customStyles = {
   option: (provided, state) => {
     return {
       ...provided,
-      // color: "#182C61",
+
       backgroundColor:
         state.data === state.selectProps.value ? "#182C61" : "white",
       color: state.data === state.selectProps.value ? "white" : "#182C61"
@@ -17,16 +17,16 @@ const customStyles = {
 
 const catergoryOptions = [
   { value: "pokemon-species", label: "species" },
-  { value: "ability", label: "ability" },
+  { value: "ability", label: "abilities" },
   { value: "pokemon-color", label: "color" },
   { value: "pokemon-shape", label: "shape" },
   { value: "pokemon-habitat", label: "habitat" },
-  { value: "gender", label: "gender" }
+  { value: "growth-rate", label: "growthRate" }
 ];
 
 const initialValue = { value: "", label: "" };
 
-function Filter() {
+function Filter({ onFilter }) {
   const [category, setCategory] = useState(initialValue);
   const [options, setOptions] = useState(null);
   const [subCategory, setSubCategory] = useState(initialValue);
@@ -58,10 +58,19 @@ function Filter() {
     setOptions(values);
   };
 
-  const filterSubCatergoryHandler = function (e) {
+  const filterSubCatergoryHandler = async function (e) {
+    const categoryValue = category.label;
     const value = e.value;
     setSubCategory(e);
-    console.log(value, category.value);
+
+    onFilter({ category: categoryValue, subCategory: value });
+    // const req = await fetch(
+    //   `https://pokeapi.co/api/v2/${catergoryValue}/${value}/`
+    // );
+
+    // const res = await req.json();
+
+    // console.log(res, "res");
   };
 
   return (

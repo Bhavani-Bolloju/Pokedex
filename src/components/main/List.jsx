@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import ListItem from "../main/ListItem";
+import { useOutletContext } from "react-router-dom";
 
 function List() {
   const [data, setData] = useState([]);
@@ -7,6 +8,8 @@ function List() {
 
   const [isLoading, setIsLoading] = useState(false);
   const targetObserver = useRef();
+
+  const filterValue = useOutletContext();
 
   const fetchData = async (offSetPage) => {
     try {
@@ -19,19 +22,53 @@ function List() {
 
       const data = res?.results;
 
-      const pokemonData = await Promise.all(
+      const pokemon = await Promise.all(
         data?.map(async (item) => {
           const req = await fetch(
             `https://pokeapi.co/api/v2/pokemon/${item.name}/`
           );
+
           const res = await req.json();
 
-          // console.log(res, "data");
-          const resObj = { pokemon: item.name, id: res?.id, color: "" };
+          const abilites = res?.abilities?.map((item) => item?.ability?.name);
 
+          const resObj = {
+            pokemon: item.name,
+            id: res?.id,
+            species: res?.species?.name,
+            abilities: abilites
+          };
           return resObj;
         })
       );
+
+      const pokemonSpecies = await Promise.all(
+        data?.map(async (item) => {
+          const req = await fetch(
+            `https://pokeapi.co/api/v2/pokemon-species/${item.name}/`
+          );
+
+          const res = await req.json();
+          const resObj = {
+            id: res?.id,
+            color: res?.color?.name,
+            habitat: res?.habitat?.name,
+            shape: res?.shape?.name,
+            growthRate: res?.["growth_rate"]?.name
+          };
+          return resObj;
+        })
+      );
+
+      // console.log(pokem
+
+      const pokemonData = [];
+
+      pokemon.forEach((item, i) => {
+        const id = item.id;
+        const filter = pokemonSpecies.filter((data) => data.id === id);
+        pokemonData.push({ ...item, ...filter[0] });
+      });
 
       setData((prev) => [...prev, ...pokemonData]);
       setPage((prev) => prev + 1);
@@ -49,7 +86,7 @@ function List() {
       (entries) => {
         if (entries[0].isIntersecting) {
           // fetchData(page);
-          // console.log(entries[0]);
+          console.log(entries[0]);
         }
       },
       { threshold: 0 }
@@ -68,12 +105,26 @@ function List() {
     }
   }, []);
 
-  // console.log(isLoading);
+  let finalData = data;
+
+  if (filterValue.category !== "") {
+    const { category, subCategory } = filterValue;
+
+    const filterData = finalData.filter((item) => {
+      const value = item[category];
+
+      if (category == "abilities") {
+        return value.includes(subCategory);
+      }
+      return value == subCategory;
+    });
+    finalData = filterData;
+  }
 
   return (
     <div className="w-[80%] m-auto pb-20">
       <ul className="flex justify-center flex-wrap gap-14">
-        {data?.map((item, i) => {
+        {finalData?.map((item, i) => {
           return (
             <ListItem
               key={item.id + "" + i}
@@ -83,6 +134,10 @@ function List() {
             />
           );
         })}
+
+        {finalData.length <= 0 && (
+          <p className="capitalize text-xl font-medium">No data found</p>
+        )}
       </ul>
       <div ref={targetObserver}></div>
     </div>
@@ -90,24 +145,3 @@ function List() {
 }
 
 export default List;
-
-// const pokemons = await Promise.all(pokemonData);
-
-// setData((prev) => {
-//   console.log(prev, "prev");
-//   return [...prev, ...pokemons];
-// });
-
-// setPage((prev) => {
-//   return (prev += 1);
-// });
-
-// const colorData = await fetch(
-//   `https://pokeapi.co/api/v2/pokemon-color/${res?.id}/`
-// );
-
-// if (colorData.ok) {
-//   const { name, id } = await colorData.json();
-//   resObj.id = id;
-//   resObj.color = name;
-// }
