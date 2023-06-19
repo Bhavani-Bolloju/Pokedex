@@ -4,18 +4,20 @@ import { useOutletContext } from "react-router-dom";
 
 function List() {
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const targetObserver = useRef();
 
   const filterValue = useOutletContext();
+  const itemsPerPage = 16;
 
-  const fetchData = async (offSetPage) => {
+  const fetchData = async (pageNum) => {
     try {
       setIsLoading(true);
       const req = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/?limit=20&offset=${offSetPage}`
+        `https://pokeapi.co/api/v2/pokemon/?limit=${itemsPerPage}&offset=${pageNum}`
       );
 
       const res = await req.json();
@@ -60,8 +62,6 @@ function List() {
         })
       );
 
-      // console.log(pokem
-
       const pokemonData = [];
 
       pokemon.forEach((item, i) => {
@@ -71,31 +71,36 @@ function List() {
       });
 
       setData((prev) => [...prev, ...pokemonData]);
-      setPage((prev) => prev + 1);
+      setPage((prev) => prev + itemsPerPage);
     } catch (error) {
       console.log(error);
     }
 
     setIsLoading(false);
-
-    // console.log(isTrue);
   };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          // fetchData(page);
-          console.log(entries[0]);
+          fetchData(page);
         }
       },
-      { threshold: 0 }
+      {
+        root: null,
+        threshold: 0.8
+      }
     );
 
     if (targetObserver.current) {
       observer.observe(targetObserver.current);
     }
-  }, [targetObserver]);
+    return () => {
+      if (targetObserver.current) {
+        observer.unobserve(targetObserver.current);
+      }
+    };
+  }, [page]);
 
   let isTrue = false;
   useEffect(() => {
@@ -122,23 +127,25 @@ function List() {
   }
 
   return (
-    <div className="w-[80%] m-auto pb-20">
-      <ul className="flex justify-center flex-wrap gap-14">
-        {finalData?.map((item, i) => {
-          return (
-            <ListItem
-              key={item.id + "" + i}
-              name={item.pokemon}
-              id={item.id}
-              color={item.color}
-            />
-          );
-        })}
+    <div className="w-[80%] m-auto ">
+      <div className="min-h-screen pb-20 flex flex-col justify-between">
+        <ul className="flex justify-center flex-wrap gap-14 min-h-screen">
+          {finalData?.map((item, i) => {
+            return (
+              <ListItem
+                key={item.id + "" + i}
+                name={item.pokemon}
+                id={item.id}
+                color={item.color}
+              />
+            );
+          })}
 
-        {finalData.length <= 0 && (
-          <p className="capitalize text-xl font-medium">No data found</p>
-        )}
-      </ul>
+          {finalData.length <= 0 && (
+            <p className="capitalize text-xl font-medium">No data found</p>
+          )}
+        </ul>
+      </div>
       <div ref={targetObserver}></div>
     </div>
   );
