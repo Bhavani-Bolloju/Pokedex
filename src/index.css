@@ -5,3 +5,8 @@
 /* #FEA47F 
 #182C61
 */
+
+.body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  display: none;
+}

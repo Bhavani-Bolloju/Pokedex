@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useFetch from "../hooks/use-fetch";
+import Spinner from "../components/ui/Spinner";
 
 function DetailsPage() {
   const params = useParams();
@@ -8,6 +9,8 @@ function DetailsPage() {
   const { data, isLoading, error } = useFetch(
     `https://pokeapi.co/api/v2/pokemon-species/${params.id}`
   );
+
+  // console.log(data, isLoading, error);
   const {
     data: speciesData,
     isLoading: isSpeciesDataLoading,
@@ -59,13 +62,13 @@ function DetailsPage() {
 
   return (
     <div className="max-w-[600px] mx-auto mt-10 bg-[#FFECE4] p-12 rounded shadow-md min-h-[600px]">
-      {data && speciesData && (
+      {data && (
         <div className="bg-white p-10 grid grid-flow-row justify-center py-15 relative gap-4 rounded shadow-sm">
           <div className="text-center uppercase mb-4 font-semibold text-[#182C61] text-2xl font-[Rubik]">
             {data?.name}
           </div>
           <img
-            className="w-41 h-40 mb-5"
+            className="w-40 h-40 mb-5"
             src={`https://unpkg.com/pokeapi-sprites@2.0.2/sprites/pokemon/other/dream-world/${data?.id}.svg`}
             alt={data?.name}
           />
@@ -106,6 +109,16 @@ function DetailsPage() {
               />
             </svg>
           </div>
+        </div>
+      )}
+      {isLoading && (
+        <div className="flex h-full w-full items-center justify-center">
+          <Spinner></Spinner>
+        </div>
+      )}
+      {error && (
+        <div className="flex h-full w-full items-center justify-center capitalize text-red-400 font-medium">
+          {error}
         </div>
       )}
     </div>

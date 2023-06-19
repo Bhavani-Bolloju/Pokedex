@@ -11,15 +11,30 @@ function Header() {
           <img src={logo} alt="pokemon" className="w-12" />
           <span>Pokedex</span>
         </h1>
-        <ul className="flex gap-12 justify-center w-full text-base font-medium">
+        <ul className="flex gap-12 justify-end w-full text-base font-medium">
           <li>
-            <NavLink to="/home">Home</NavLink>
+            <NavLink
+              to="/"
+              className={({ isActive }) => (isActive ? "text-[#FEA47F]" : "")}
+            >
+              Home
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/search">Search</NavLink>
+            <NavLink
+              to="/search"
+              className={({ isActive }) => (isActive ? "text-[#FEA47F]" : "")}
+            >
+              Search
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/bookmark">Bookmark</NavLink>
+            <NavLink
+              to="/bookmark"
+              className={({ isActive }) => (isActive ? "text-[#FEA47F]" : "")}
+            >
+              Bookmark
+            </NavLink>
           </li>
         </ul>
       </div>

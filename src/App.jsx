@@ -11,15 +11,18 @@ function App() {
   return (
     <div className="text-[#182C61] font-[Outfit] ">
       <Header />
-      <Routes>
-        <Route path="/" element={<HomePage />}>
-          <Route index element={<List />}></Route>
-        </Route>
-        <Route path="/home" element={<Navigate to="/" />} />
-        <Route path="/:id" element={<DetailsPage />} />
-        <Route path="/bookmark" element={<BookmarksPage />} />
-        <Route path="/search" element={<SearchResult />} />
-      </Routes>
+      <div>
+        <Routes>
+          <Route path="/" element={<HomePage />}>
+            <Route index element={<List />}></Route>
+            <Route path="/filter" element={<p>filter result</p>} />
+          </Route>
+          <Route path="/home" element={<Navigate to="/" />} />
+          <Route path="/:id" element={<DetailsPage />} />
+          <Route path="/bookmark" element={<BookmarksPage />} />
+          <Route path="/search" element={<SearchResult />} />
+        </Routes>
+      </div>
     </div>
   );
 }

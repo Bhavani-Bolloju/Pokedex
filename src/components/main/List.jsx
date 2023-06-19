@@ -12,10 +12,11 @@ function List() {
     try {
       setIsLoading(true);
       const req = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/?limit=10&offset=${offSetPage}`
+        `https://pokeapi.co/api/v2/pokemon/?limit=20&offset=${offSetPage}`
       );
 
       const res = await req.json();
+
       const data = res?.results;
 
       const pokemonData = await Promise.all(
@@ -25,6 +26,7 @@ function List() {
           );
           const res = await req.json();
 
+          // console.log(res, "data");
           const resObj = { pokemon: item.name, id: res?.id, color: "" };
 
           return resObj;
