@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import ListItem from "../main/ListItem";
 import { useOutletContext } from "react-router-dom";
+import Spinner from "../ui/Spinner";
 
 function List() {
   const [data, setData] = useState([]);
@@ -29,6 +30,7 @@ function List() {
           const req = await fetch(
             `https://pokeapi.co/api/v2/pokemon/${item.name}/`
           );
+          if (!req.ok) throw new Error("failed to fetch data");
 
           const res = await req.json();
 
@@ -50,7 +52,9 @@ function List() {
             `https://pokeapi.co/api/v2/pokemon-species/${item.name}/`
           );
 
+          if (!req.ok) throw new Error("failed to fetch data");
           const res = await req.json();
+
           const resObj = {
             id: res?.id,
             color: res?.color?.name,
@@ -73,7 +77,7 @@ function List() {
       setData((prev) => [...prev, ...pokemonData]);
       setPage((prev) => prev + itemsPerPage);
     } catch (error) {
-      console.log(error);
+      setError(error);
     }
 
     setIsLoading(false);
@@ -126,27 +130,44 @@ function List() {
     finalData = filterData;
   }
 
+  console.log(isLoading, error, data);
+
   return (
     <div className="w-[80%] m-auto ">
-      <div className="min-h-screen pb-20 flex flex-col justify-between">
-        <ul className="flex justify-center flex-wrap gap-14 min-h-screen">
-          {finalData?.map((item, i) => {
-            return (
-              <ListItem
-                key={item.id + "" + i}
-                name={item.pokemon}
-                id={item.id}
-                color={item.color}
-              />
-            );
-          })}
+      {data && (
+        <div>
+          <div className="min-h-screen pb-20 flex flex-col justify-between">
+            <ul className="flex justify-center flex-wrap gap-14 min-h-screen">
+              {finalData?.map((item, i) => {
+                return (
+                  <ListItem
+                    key={item.id + "" + i}
+                    name={item.pokemon}
+                    id={item.id}
+                    color={item.color}
+                  />
+                );
+              })}
 
-          {finalData.length <= 0 && (
-            <p className="capitalize text-xl font-medium">No data found</p>
-          )}
-        </ul>
-      </div>
-      <div ref={targetObserver}></div>
+              {finalData.length <= 0 && !isLoading && (
+                <p className="capitalize text-xl font-medium">No data found</p>
+              )}
+            </ul>
+          </div>
+          <div ref={targetObserver}></div>
+        </div>
+      )}
+
+      {isLoading && (
+        <div className="flex items-center justify-center ">
+          <Spinner />
+        </div>
+      )}
+      {error && (
+        <div className="flex items-center font-medium capitalize text-red-300 justify-center ">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
