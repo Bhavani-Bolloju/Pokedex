@@ -4,7 +4,7 @@ import { useOutletContext } from "react-router-dom";
 import Spinner from "../ui/Spinner";
 
 function List() {
-  const [data, setData] = useState([]);
+  const [datalist, setDataList] = useState([]);
   const [page, setPage] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +74,7 @@ function List() {
         pokemonData.push({ ...item, ...filter[0] });
       });
 
-      setData((prev) => [...prev, ...pokemonData]);
+      setDataList([...datalist, ...pokemonData]);
       setPage((prev) => prev + itemsPerPage);
     } catch (error) {
       setError(error);
@@ -106,19 +106,17 @@ function List() {
     };
   }, [page, targetObserver]);
 
-  let isTrue = false;
   useEffect(() => {
-    if (!isTrue) {
-      fetchData(page);
-      isTrue = true;
-    }
+    fetchData(page);
   }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [filterValue]);
 
-  let finalData = data;
+  // console.log(datalist);
+
+  let finalData = datalist;
 
   if (filterValue.category !== "") {
     const { category, subCategory } = filterValue;
@@ -136,7 +134,7 @@ function List() {
 
   return (
     <div className="w-[80%] m-auto ">
-      {data && (
+      {datalist && (
         <div>
           <div className="min-h-screen mb-20 ">
             <ul className="flex justify-center flex-wrap gap-14 min-h-screen">
