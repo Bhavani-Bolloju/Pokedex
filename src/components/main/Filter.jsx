@@ -16,7 +16,6 @@ const customStyles = {
 };
 
 const catergoryOptions = [
-  { value: "pokemon-species", label: "species" },
   { value: "ability", label: "abilities" },
   { value: "pokemon-color", label: "color" },
   { value: "pokemon-shape", label: "shape" },
@@ -30,16 +29,6 @@ function Filter({ onFilter }) {
   const [category, setCategory] = useState(initialValue);
   const [options, setOptions] = useState(null);
   const [subCategory, setSubCategory] = useState(initialValue);
-
-  // console.log(category);
-
-  const { data, error, isLoading } = useFetch("https://pokeapi.co/api/v2/");
-  // const { data: species } = useFetch(
-  //   "https://pokeapi.co/api/v2/pokemon-species/1"
-  // );
-
-  // console.log(data);
-  // console.log(species);
 
   const filterCategoryHandler = async function (e) {
     const value = e.value;
@@ -64,19 +53,13 @@ function Filter({ onFilter }) {
     setSubCategory(e);
 
     onFilter({ category: categoryValue, subCategory: value });
-    // const req = await fetch(
-    //   `https://pokeapi.co/api/v2/${catergoryValue}/${value}/`
-    // );
-
-    // const res = await req.json();
-
-    // console.log(res, "res");
   };
 
   return (
     <div className="relative w-56 bg-red-400   ">
-      <div className="fixed  w-56 left-0 h-full bg-[#182C61]  text-[#e8eaef] z-50">
-        <div className="flex flex-wrap gap-2 justify-center mt-20 px-5">
+      <div className="fixed  w-56 left-0 h-full bg-[#182C61]  text-[#e8eaef] z-50 px-5">
+        <p className="flex-1 mt-20 capitalize mb-4 ">filter by:</p>
+        <div className="flex flex-wrap gap-2 justify-center ">
           <h3 className="flex-1">Catergory</h3>
           <Select
             options={catergoryOptions}
@@ -89,7 +72,7 @@ function Filter({ onFilter }) {
         </div>
 
         {options && (
-          <div className="flex flex-wrap gap-2 mt-4 px-5">
+          <div className="flex flex-wrap gap-2 mt-4 ">
             <h3 className="flex-1">Sub - Catergory</h3>
             <Select
               options={options}

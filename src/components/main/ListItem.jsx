@@ -9,7 +9,7 @@ function ListItem({ name, id }) {
   }
 
   return (
-    <li className="border-2 p-8 flex flex-col items-center rounded flex-1 max-w-[300px] min-w-[250px]">
+    <li className="border-2 p-8 flex flex-col items-center rounded flex-1 max-w-[300px] min-w-[250px] h-[350px]">
       <div className="text-center font-[Rubik] capitalize font-[500] text-xl mb-6">
         {name}
       </div>

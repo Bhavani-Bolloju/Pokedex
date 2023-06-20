@@ -12,7 +12,7 @@ function List() {
   const targetObserver = useRef();
 
   const filterValue = useOutletContext();
-  const itemsPerPage = 16;
+  const itemsPerPage = 20;
 
   const fetchData = async (pageNum) => {
     try {
@@ -92,7 +92,7 @@ function List() {
       },
       {
         root: null,
-        threshold: 0.8
+        threshold: 1
       }
     );
 
@@ -104,7 +104,7 @@ function List() {
         observer.unobserve(targetObserver.current);
       }
     };
-  }, [page]);
+  }, [page, targetObserver]);
 
   let isTrue = false;
   useEffect(() => {
@@ -113,6 +113,10 @@ function List() {
       isTrue = true;
     }
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [filterValue]);
 
   let finalData = data;
 
@@ -130,13 +134,11 @@ function List() {
     finalData = filterData;
   }
 
-  console.log(isLoading, error, data);
-
   return (
     <div className="w-[80%] m-auto ">
       {data && (
         <div>
-          <div className="min-h-screen pb-20 flex flex-col justify-between">
+          <div className="min-h-screen mb-20 ">
             <ul className="flex justify-center flex-wrap gap-14 min-h-screen">
               {finalData?.map((item, i) => {
                 return (
